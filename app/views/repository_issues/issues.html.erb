@@ -1,0 +1,25 @@
+<h2>Issues related to path /<%= @path %></h2>
+
+<table class="list">
+    <thead>
+        <tr>
+            <th>Issue</th>
+            <th>Status</th>
+            <th>Assigned to</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @issues.each do |issue| %>
+        <tr>
+            <td><%= link_to_issue issue %></td>
+            <td><%= issue.status %></td>
+            <td><%= avatar(issue.assigned_to, :size => "14") %> <%= link_to_user issue.assigned_to %></td>
+        </tr>
+        <% end %>
+        <% if not @issues.any? %>
+        <tr class="empty"><td colspan="3">No issues</td></tr>
+        <% end %>
+    </tbody>
+</table>
+
+<%= pagination_links_full @pages, @count %>
