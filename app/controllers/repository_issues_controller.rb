@@ -13,7 +13,11 @@ class RepositoryIssuesController < RepositoriesController
     @pages = Paginator.new @count, per_page, page
 
     @issues = Issue.limit(per_page).offset(@pages.offset)
-    @issues = Change.joins(:changeset => :issues).where(:path => '/' + @path).order('committed_on DESC').limit(per_page).offset(@pages.offset).map(&:changeset).map(&:issues).flatten.uniq
+    @issues = Change.joins(:changeset => :issues)
+      .where(:path => '/' + @path, 'issues.closed_on' => nil)
+      .order('committed_on DESC')
+      .limit(per_page).offset(@pages.offset)
+      .map(&:changeset).map(&:issues).flatten.uniq
   end
 
 end
