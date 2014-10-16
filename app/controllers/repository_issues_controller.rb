@@ -9,12 +9,11 @@ class RepositoryIssuesController < RepositoriesController
     page = params[:page].to_i
     page = 1 if page < 1
 
-    query = Change.joins(:changeset => :issues)
-      .where(:path => '/' + @path, 'issues.closed_on' => nil)
-      .order('committed_on DESC')
+    query = Issue.joins(:changesets => :filechanges).where('changes.path' => '/hu', :closed_on => nil).order('committed_on DESC')
+
     @count = query.count
     @pages = Paginator.new @count, per_page, page
-    @issues = query.limit(per_page).offset(@pages.offset).map(&:changeset).map(&:issues).flatten.uniq
+    @issues = query.limit(per_page).offset(@pages.offset)
   end
 
 end
