@@ -20,7 +20,7 @@ class RepositoryIssuesController < RepositoriesController
 
     ids = query.map(&:id).slice(@pages.offset, per_page)
 
-    @issues = Issue.includes(:status)
+    @issues = Issue.includes(:status, :assigned_to, :project)
       .where(:id => ids)
 
   end
