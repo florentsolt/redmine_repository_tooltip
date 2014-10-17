@@ -12,10 +12,17 @@ class RepositoryIssuesController < RepositoriesController
     query = Issue.joins(:changesets => :filechanges)
       .where('changes.path' => '/' + @path, :closed_on => nil)
       .order('committed_on DESC')
+      .select('issues.id').uniq
 
     @count = query.count
+
     @pages = Paginator.new @count, per_page, page
-    @issues = query.limit(per_page).offset(@pages.offset)
+
+    ids = query.map(&:id).slice(@pages.offset, per_page)
+
+    @issues = Issue.includes(:status)
+      .where(:id => ids)
+
   end
 
 end
